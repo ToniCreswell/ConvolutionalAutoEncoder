@@ -3,13 +3,27 @@ A very simple convolutional autoencoder implemented in lasagne, applied to MNIST
 ![alt text](rec.png)
 
 ## Requirements
-Lasagne
-```git clone https://github.com/Lasagne/Lasagne.git```\\
+### Lasagne
+
+
+```git clone https://github.com/Lasagne/Lasagne.git```
 
 ```cd Lasagne```
 
 ```pip install -r requirements.txt```
 
 ```pip install . ```
+
+### Others
+
+``` pip install numpy ```
+
+``` pip install matplotlib ```
+
+``` pip install scikit-image ```
+
+``` pip install time ```
+
+
 
 
