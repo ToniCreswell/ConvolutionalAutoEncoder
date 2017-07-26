@@ -1,4 +1,4 @@
-#DCGAN Using Lasagne (for CelebA)
+#CAE Using Lasagne (for MNIST)
 from lasagne.layers import InputLayer, DenseLayer, Conv2DLayer, Deconv2DLayer, flatten, reshape, batch_norm, Upscale2DLayer
 from lasagne.nonlinearities import rectify as relu
 from lasagne.nonlinearities import LeakyRectify as lrelu
@@ -16,15 +16,24 @@ from matplotlib import pyplot as plt
 
 from skimage.io import imsave
 
+import argparse
+
 floatX=theano.config.floatX
 
 def get_args():
 	print 'getting args...'
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--inDir', required=True, type=str)  
+	parser.add_argument('--outDir', default='.', type=str)
+	parser.add_argument('--maxEpochs', default=10, type=int) 
+	parser.add_argument('--alpha', default=1e-6, type=float)
+	parser.add_argument('--batchSize', default=64, type=int)
+	parser.add_argument('--nz', default=10, type=int)
+	args = parser.parse_args()
+	return args
 
-def save_args():
-	print 'saving args...'
 
-def build_net(nz=100):
+def build_net(nz=10):
 	# nz = size of latent code
 	#N.B. using batch_norm applies bn before non-linearity!
 	F=32
@@ -116,39 +125,35 @@ def train(trainData,testData, nz=100, alpha=0.001, batchSize=64, epoch=1):
 def test(x, rec):
 	return rec(x)
 
-def load_data():
-	dataDir = '/home/ac2211/Documents/PhD_Yr1/Projects/Project17_DAAE/InData/mnist.pkl'  #/data/datasets/MNIST/mnist.pkl
+def load_data(opts):
+	dataDir = opts.inDir  #/data/datasets/MNIST/mnist.pkl
 	train,test,val = np.load(dataDir,mmap_mode='r')
 
 	return train[0].reshape(-1,1,28,28).astype(floatX), train[1], test[0].reshape(-1,1,28,28).astype(floatX), test[1], val[0].astype(floatX), val[1]
 
 
-enc, dec = build_net()
-for l in get_all_layers(enc):
-	print get_output_shape(l)
-for l in get_all_layers(dec):
-	print get_output_shape(l)
+
+if __name__=='__main__':
+	opts=get_args()
+	enc, dec = build_net(opts.nz)
+	for l in get_all_layers(enc):
+		print get_output_shape(l)
+	for l in get_all_layers(dec):
+		print get_output_shape(l)
 
 
-x_train, _,x_test,_,_,_=load_data()
-test, rec, E, D =train(x_train, x_test)
+	x_train, _,x_test,_,_,_=load_data(opts)
+	test, rec, E, D =train(x_train, x_test, nz=opts.nz, alpha=opts.alpha, batchSize=opts.batchSize, epoch=opts.maxEpochs)
 
 
-#see if the output images look good:
-#Save example reconstructions
-REC = rec(x_test[:10])
-print np.shape(REC), np.shape(x_test[:10])
-try:
-	test_rec = np.mean((REC - x_test[:rec.shape[0]])**2)
-	print 'Mean Test Reconstruction Error:', test_rec  #may no rec all
-except:
-	print 'error calc mse'
+	#see if the output images look good:
+	#Save example reconstructions
+	REC = rec(x_test[:10])
 
-#Save generated samples (by category)
-fig=plt.figure()
-newDir=''
-montageRow1 = np.hstack(x_test[:10].reshape(-1,28,28))
-montageRow2 = np.hstack(REC[:10].reshape(-1,28,28))
-montage = np.vstack((montageRow1, montageRow2))
-plt.imshow(montage, cmap='gray')
-plt.savefig('rec.png')
+	fig=plt.figure()
+	newDir=opts.outDir
+	montageRow1 = np.hstack(x_test[:10].reshape(-1,28,28))
+	montageRow2 = np.hstack(REC[:10].reshape(-1,28,28))
+	montage = np.vstack((montageRow1, montageRow2))
+	plt.imshow(montage, cmap='gray')
+	plt.savefig(os.path.join(newDir, 'rec.png'))
