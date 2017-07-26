@@ -135,18 +135,19 @@ def load_data(opts):
 
 if __name__=='__main__':
 	opts=get_args()
+
+	#Print out the network shapes
 	enc, dec = build_net(opts.nz)
 	for l in get_all_layers(enc):
 		print get_output_shape(l)
 	for l in get_all_layers(dec):
 		print get_output_shape(l)
 
-
+	#Train network
 	x_train, _,x_test,_,_,_=load_data(opts)
 	test, rec, E, D =train(x_train, x_test, nz=opts.nz, alpha=opts.alpha, batchSize=opts.batchSize, epoch=opts.maxEpochs)
 
 
-	#see if the output images look good:
 	#Save example reconstructions
 	REC = rec(x_test[:10])
 
