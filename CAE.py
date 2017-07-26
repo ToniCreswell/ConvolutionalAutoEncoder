@@ -64,7 +64,7 @@ def prep_train(alpha=0.0002, nz=100):
 	encoding = get_output(E,x)
 	decoding = get_output(D,encoding)
 
-	#Get parameters of G and D
+	#Get parameters of E and D
 	params_e=get_all_params(E, trainable=True)
 	params_d=get_all_params(D, trainable=True)
 	params = params_e + params_d
