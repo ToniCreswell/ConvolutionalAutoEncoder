@@ -4,7 +4,12 @@ A very simple convolutional autoencoder implemented in lasagne, applied to MNIST
 
 ## Requirements
 Lasagne
-```git clone https://github.com/Lasagne/Lasagne.git```\n
-```cd Lasagne```\n
-```pip install -r requirements.txt```\n
-```pip install . ```\n
+```git clone https://github.com/Lasagne/Lasagne.git```\\
+
+```cd Lasagne```
+
+```pip install -r requirements.txt```
+
+```pip install . ```
+
+
