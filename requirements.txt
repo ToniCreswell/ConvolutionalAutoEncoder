@@ -11,7 +11,7 @@ Lasagne==0.2.dev1
 lxml==3.8.0
 matplotlib==2.0.2
 networkx==1.11
-numpy==1.13.0
+numpy==1.21.0
 olefile==0.44
 Pillow==4.1.1
 pyparsing==2.2.0
